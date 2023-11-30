@@ -5,6 +5,8 @@ import MarvelService from '../../services/MarvelService';
 import './randomChar.scss';
 import mjolnir from '../../resources/img/mjolnir.png';
 
+const noDescriptionText = 'Sorry, here is no description.'
+
 class RandomChar extends Component {
     constructor(props){
         super(props);
@@ -28,6 +30,7 @@ class RandomChar extends Component {
 
     render() {
         const {char: {name, description, thumbnail, homepage, wiki} } = this.state;
+        console.log()
         return (
             <div className="randomchar">
                 <div className="randomchar__block">
@@ -35,7 +38,7 @@ class RandomChar extends Component {
                     <div className="randomchar__info">
                         <p className="randomchar__name">{name}</p>
                         <p className="randomchar__descr">
-                            {description}
+                            {description || noDescriptionText}
                         </p>
                         <div className="randomchar__btns">
                             <a href={homepage} className="button button__main">
