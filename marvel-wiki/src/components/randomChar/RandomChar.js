@@ -10,14 +10,14 @@ import mjolnir from '../../resources/img/mjolnir.png';
 const noDescriptionText = 'Sorry, here is no description.'
 
 class RandomChar extends Component {
-    constructor(props) {
-        super(props);
-        this.updateChar();
-    }
     state = {
         char: {},
         loading: true,
         error: false,
+    }
+
+    componentDidMount(){
+        this.updateChar();
     }
 
     onError = () => {
