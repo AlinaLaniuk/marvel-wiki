@@ -8,6 +8,11 @@ import './charList.scss';
 
 
 class CharList extends Component {
+    constructor(props){
+        super(props);
+        this.updateCurrentCharId = props.updateCurrentCharId;
+    }
+
     state = {
         charsListInfo: null,
         loading: true
@@ -26,7 +31,7 @@ class CharList extends Component {
     render() {
         const { charsListInfo, loading } = this.state;
         const spinner = loading ? <Spinner />  : null;
-        const content = !loading ? <List charsListInfo={charsListInfo}/> : null;
+        const content = !loading ? <List updateCurrentCharId={this.updateCurrentCharId} charsListInfo={charsListInfo}/> : null;
         return (
             <div className="char__list">
                 {spinner}
@@ -39,8 +44,8 @@ class CharList extends Component {
     }
 }
 
-const List = ({charsListInfo}) => {
-    const list = charsListInfo.map((char) => <CharCard key={char.id} name={char.name} thumbnail={char.thumbnail}/>)
+const List = ({charsListInfo, updateCurrentCharId}) => {
+    const list = charsListInfo.map((char) => <CharCard key={char.id} id={char.id} updateCurrentCharId={updateCurrentCharId} name={char.name} thumbnail={char.thumbnail}/>)
     return (
         <ul className="char__grid">
             {list}
