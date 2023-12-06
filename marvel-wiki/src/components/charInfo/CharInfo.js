@@ -19,7 +19,6 @@ class CharInfo extends Component {
 
     componentDidMount() {
         this.updateChar();
-        console.log('mounted')
     }
 
     componentDidUpdate(prevProps){
@@ -43,12 +42,11 @@ class CharInfo extends Component {
         this.setState({ loading: true });
         this.marvelService.getCharacter(this.props.currentCharId)
             .then(this.onCharLoaded)
-            // .catch(this.onError)
+            .catch(this.onError)
     }
 
     render() {
         const {char, loading, error} = this.state;
-        console.log(char)
         const skeleton = char || loading || error ? null : <Skeleton/>;
         const errorMessage = error ? <ErrorMessage/> : null;
         const spinner = loading ? <Spinner />  : null;
