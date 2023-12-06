@@ -4,7 +4,7 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Skeleton from '../skeleton/Skeleton';
 import MarvelService from '../../services/MarvelService';
-import './charInfo.scss'; 
+import './charInfo.scss';
 
 const maxComicsOnPage = 10;
 const noComicsMessage = 'Sorry, there is no information about comics.';
@@ -24,8 +24,8 @@ class CharInfo extends Component {
         this.updateChar();
     }
 
-    componentDidUpdate(prevProps){
-        if(this.props.currentCharId !== prevProps.currentCharId){
+    componentDidUpdate(prevProps) {
+        if (this.props.currentCharId !== prevProps.currentCharId) {
             this.updateChar();
         }
     }
@@ -49,11 +49,11 @@ class CharInfo extends Component {
     }
 
     render() {
-        const {char, loading, error} = this.state;
-        const skeleton = char || loading || error ? null : <Skeleton/>;
-        const errorMessage = error ? <ErrorMessage/> : null;
-        const spinner = loading ? <Spinner />  : null;
-        const content = !(loading || error || !char) ? <View char={char}/> : null;
+        const { char, loading, error } = this.state;
+        const skeleton = char || loading || error ? null : <Skeleton />;
+        const errorMessage = error ? <ErrorMessage /> : null;
+        const spinner = loading ? <Spinner /> : null;
+        const content = !(loading || error || !char) ? <View char={char} /> : null;
         return (
             <div className="char__info">
                 {skeleton}
@@ -70,17 +70,17 @@ const imageNotFoundSrc = 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_
 const View = (props) => {
     const { id, name, description, thumbnail, homepage, wiki, comics } = props.char;
     const comicsList = [];
-    if(comics.length){
-        for(let i = 0; i < maxComicsOnPage; i++){
+    if (comics.length) {
+        for (let i = 0; i < maxComicsOnPage; i++) {
             const comic = comics[i];
-            if(comic){
+            if (comic) {
                 comicsList.push(<Comic key={comics[i].name} name={comics[i].name} />)
             }
         }
     }
 
     const comicsContent = comicsList.length ? comicsList : noComicsMessage;
-    const imgStyle = thumbnail === imageNotFoundSrc ? {objectFit: 'contain'} : null;
+    const imgStyle = thumbnail === imageNotFoundSrc ? { objectFit: 'contain' } : null;
     return (
         <>
             <div className="char__basics">

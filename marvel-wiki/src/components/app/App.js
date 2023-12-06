@@ -4,6 +4,7 @@ import AppHeader from "../appHeader/AppHeader";
 import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
 import CharInfo from "../charInfo/CharInfo";
+import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
 import decoration from '../../resources/img/vision.png';
 
@@ -13,19 +14,25 @@ class App extends Component {
     }
 
     updateCurrentCharId = (newId) => {
-        this.setState({currentCharId: newId});
+        this.setState({ currentCharId: newId });
     }
 
     render() {
-        const {currentCharId} = this.state;
+        const { currentCharId } = this.state;
         return (
             <div className="app">
                 <AppHeader />
                 <main>
-                    <RandomChar />
+                    <ErrorBoundary>
+                        <RandomChar />
+                    </ErrorBoundary>
                     <div className="char__content">
-                        <CharList updateCurrentCharId={this.updateCurrentCharId}/>
-                        <CharInfo currentCharId={currentCharId}/>
+                        <ErrorBoundary>
+                            <CharList updateCurrentCharId={this.updateCurrentCharId} />
+                        </ErrorBoundary>
+                        <ErrorBoundary>
+                            <CharInfo currentCharId={currentCharId} />
+                        </ErrorBoundary>
                     </div>
                     <img className="bg-decoration" src={decoration} alt="vision" />
                 </main>
