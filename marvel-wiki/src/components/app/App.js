@@ -9,7 +9,7 @@ import decoration from '../../resources/img/vision.png';
 
 class App extends Component {
     state = {
-        currentCharId: null
+        currentCharId: 1011096,
     }
 
     updateCurrentCharId = (newId) => {
@@ -17,6 +17,7 @@ class App extends Component {
     }
 
     render() {
+        const {currentCharId} = this.state;
         return (
             <div className="app">
                 <AppHeader />
@@ -24,7 +25,7 @@ class App extends Component {
                     <RandomChar />
                     <div className="char__content">
                         <CharList updateCurrentCharId={this.updateCurrentCharId}/>
-                        <CharInfo />
+                        <CharInfo currentCharId={currentCharId}/>
                     </div>
                     <img className="bg-decoration" src={decoration} alt="vision" />
                 </main>
