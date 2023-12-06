@@ -5,6 +5,8 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 import Skeleton from '../skeleton/Skeleton';
 import MarvelService from '../../services/MarvelService';
 import './charInfo.scss'; 
+
+const maxComicsOnPage = 10;
 class CharInfo extends Component {
     constructor(props) {
         super(props);
@@ -63,8 +65,15 @@ class CharInfo extends Component {
 }
 
 const View = (props) => {
-    const { name, description, thumbnail, homepage, wiki, comics } = props.char;
-    const comicsList = comics.map((comic) => <Comic name={comic.name} />);
+    const { id, name, description, thumbnail, homepage, wiki, comics } = props.char;
+    const comicsList = [];
+
+    for(let i = 0; i < maxComicsOnPage; i++){
+        const comic = comics[i];
+        if(comic){
+            comicsList.push(<Comic key={comics[i].name} name={comics[i].name} />)
+        }
+    }
     return (
         <>
             <div className="char__basics">
