@@ -20,6 +20,9 @@
             transform: translateY(-8px);
         }
     }
+    &__imgNotFound{
+        object-fit: unset;
+    }
     &__name {
         font-weight: bold;
         font-size: 22px;

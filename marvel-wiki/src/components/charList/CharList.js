@@ -40,7 +40,7 @@ class CharList extends Component {
 }
 
 const List = ({charsListInfo}) => {
-    const list = charsListInfo.map((char) => <CharCard key={`${char.name}${char.src}`} name={char.name} thumbnail={char.thumbnail}/>)
+    const list = charsListInfo.map((char) => <CharCard key={char.id} name={char.name} thumbnail={char.thumbnail}/>)
     return (
         <ul className="char__grid">
             {list}
