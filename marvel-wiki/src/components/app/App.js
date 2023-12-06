@@ -9,7 +9,7 @@ import decoration from '../../resources/img/vision.png';
 
 class App extends Component {
     state = {
-        currentCharId: 1011096,
+        currentCharId: null,
     }
 
     updateCurrentCharId = (newId) => {
