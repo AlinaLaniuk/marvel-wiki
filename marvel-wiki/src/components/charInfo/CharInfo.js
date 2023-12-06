@@ -7,6 +7,7 @@ import MarvelService from '../../services/MarvelService';
 import './charInfo.scss'; 
 
 const maxComicsOnPage = 10;
+const noComicsMessage = 'Sorry, there is no information about comics.';
 class CharInfo extends Component {
     constructor(props) {
         super(props);
@@ -67,13 +68,16 @@ class CharInfo extends Component {
 const View = (props) => {
     const { id, name, description, thumbnail, homepage, wiki, comics } = props.char;
     const comicsList = [];
-
-    for(let i = 0; i < maxComicsOnPage; i++){
-        const comic = comics[i];
-        if(comic){
-            comicsList.push(<Comic key={comics[i].name} name={comics[i].name} />)
+    if(comics.length){
+        for(let i = 0; i < maxComicsOnPage; i++){
+            const comic = comics[i];
+            if(comic){
+                comicsList.push(<Comic key={comics[i].name} name={comics[i].name} />)
+            }
         }
     }
+
+    const comicsContent = comicsList.length ? comicsList : noComicsMessage;
     return (
         <>
             <div className="char__basics">
@@ -95,7 +99,7 @@ const View = (props) => {
             </div>
             <div className="char__comics">Comics:</div>
             <ul className="char__comics-list">
-                {comicsList}
+                {comicsContent}
             </ul>
         </>
     )
