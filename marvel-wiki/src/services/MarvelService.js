@@ -4,7 +4,7 @@ const apiKey = 'a31fc3f76b417fa89c0f41438d31c4ba';
 
 const charsOnPage = 9;
 
-const startOffset = 210;
+const startOffset = 1550;
 
 class MarvelService {
     _baseOffset = startOffset;
