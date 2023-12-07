@@ -14,20 +14,29 @@ class CharList extends Component {
     }
 
     state = {
-        charsListInfo: null,
+        charsListInfo: [],
         loading: true
     }
 
     marvelService = new MarvelService();
 
     onCharsListLoaded = (charsListInfo) => {
-        this.setState({ charsListInfo: charsListInfo, loading: false })
+        this.setState((prevState) => {
+            
+            return {charsListInfo: [...prevState.charsListInfo, ...charsListInfo], loading: false}});
     }
 
     componentDidMount() {
+        console.log('mount')
         this.marvelService.getAllCharacters()
             .then(this.onCharsListLoaded)
     }
+
+    onLoadMore = () => {
+        this.marvelService.getAllCharacters(this.marvelService._baseOffset + 9)
+        .then(this.onCharsListLoaded)
+    }
+
     render() {
         const { charsListInfo, loading } = this.state;
         const spinner = loading ? <Spinner />  : null;
@@ -36,7 +45,7 @@ class CharList extends Component {
             <div className="char__list">
                 {spinner}
                 {content}
-                <button className="button button__main button__long">
+                <button onClick={this.onLoadMore} className="button button__main button__long">
                     <div className="inner">load more</div>
                 </button>
             </div>

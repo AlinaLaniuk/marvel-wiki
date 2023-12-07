@@ -4,9 +4,11 @@ const apiKey = 'a31fc3f76b417fa89c0f41438d31c4ba';
 
 const charsOnPage = 9;
 
-const totalCharsQuantity = 210;
+const startOffset = 210;
 
 class MarvelService {
+    _baseOffset = startOffset;
+
     gerResources = async (url) => {
         let res = await fetch(url);
 
@@ -17,8 +19,9 @@ class MarvelService {
         return await res.json();
     }
 
-    getAllCharacters = async () => {
-        const result = await this.gerResources(`${baseUrl}characters?limit=${charsOnPage}&offset=${totalCharsQuantity}&apikey=${apiKey}`);
+    getAllCharacters = async (offset = this._baseOffset) => {
+        this._baseOffset = offset;
+        const result = await this.gerResources(`${baseUrl}characters?limit=${charsOnPage}&offset=${this._baseOffset}&apikey=${apiKey}`);
         return result.data.results.map(this._transformCharacter);
     }
 
