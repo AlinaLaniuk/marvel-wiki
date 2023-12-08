@@ -87,13 +87,33 @@ CharList.propTypes = {
     updateCurrentCharId: PropTypes.func,
 }
 
-const List = ({ charsListInfo, updateCurrentCharId }) => {
-    const list = charsListInfo.map((char) => <CharCard key={char.id} id={char.id} updateCurrentCharId={updateCurrentCharId} name={char.name} thumbnail={char.thumbnail} />)
-    return (
-        <ul className="char__grid">
-            {list}
-        </ul>
-    )
+class List extends Component {
+    cardsRefs = [];
+
+    addRefToElem = (elem) => {
+        this.cardsRefs.push(elem);
+    }
+
+    onClickCard = (id) => {
+        this.props.updateCurrentCharId(id);
+
+        this.cardsRefs.forEach((elem) => {
+            elem.classList.remove('char__item_selected');
+            if (Number(elem.dataset.id) === id) {
+                elem.classList.add('char__item_selected');
+            }
+        });
+
+    }
+    render() {
+        const { charsListInfo, updateCurrentCharId } = this.props;
+        const list = charsListInfo.map((char) => <CharCard onClickCard={this.onClickCard} addRefToElem={this.addRefToElem} key={char.id} id={char.id} name={char.name} thumbnail={char.thumbnail} />)
+        return (
+            <ul className="char__grid">
+                {list}
+            </ul>
+        )
+    }
 }
 
 List.propTypes = {
