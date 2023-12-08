@@ -4,6 +4,7 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Skeleton from '../skeleton/Skeleton';
 import MarvelService from '../../services/MarvelService';
+import Image from '../image/Image';
 import './charInfo.scss';
 
 const maxComicsOnPage = 10;
@@ -65,8 +66,6 @@ class CharInfo extends Component {
     }
 }
 
-const imageNotFoundSrc = 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg';
-
 const View = (props) => {
     const { name, description, thumbnail, homepage, wiki, comics } = props.char;
     const comicsList = [];
@@ -80,11 +79,11 @@ const View = (props) => {
     }
 
     const comicsContent = comicsList.length ? comicsList : noComicsMessage;
-    const imgStyle = thumbnail === imageNotFoundSrc ? { objectFit: 'contain' } : null;
+    const isImageNotFoundStyle = { objectFit: 'contain' };
     return (
         <>
             <div className="char__basics">
-                <img style={imgStyle} src={thumbnail} alt={name} />
+                <Image style={isImageNotFoundStyle} src={thumbnail} alt={name} />
                 <div>
                     <div className="char__info-name">{name}</div>
                     <div className="char__btns">
