@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import CharCard from '../charCard/CharCard';
 import MarvelService from '../../services/MarvelService';
@@ -31,7 +32,7 @@ class CharList extends Component {
     onCharsListLoaded = (charsListInfo) => {
         this.setState((prevState) => {
             const newCharListState = [...prevState.charsListInfo, ...charsListInfo];
-            if(charsListInfo.length < charsOnPage){
+            if (charsListInfo.length < charsOnPage) {
                 return { charsListInfo: newCharListState, loading: false, newItemLoading: false, noMoreChars: true }
             }
             return { charsListInfo: newCharListState, loading: false, newItemLoading: false }
@@ -63,7 +64,7 @@ class CharList extends Component {
         const spinner = loading ? <Spinner /> : null;
         const errorMessage = error ? <ErrorMessage /> : null;
         const content = !loading ? <List updateCurrentCharId={this.updateCurrentCharId} charsListInfo={charsListInfo} /> : null;
-        const buttonStyle = noMoreChars ? {display: 'none'} : null;
+        const buttonStyle = noMoreChars ? { display: 'none' } : null;
         return (
             <div className="char__list">
                 {spinner}
@@ -82,6 +83,10 @@ class CharList extends Component {
     }
 }
 
+CharList.propTypes = {
+    updateCurrentCharId: PropTypes.func,
+}
+
 const List = ({ charsListInfo, updateCurrentCharId }) => {
     const list = charsListInfo.map((char) => <CharCard key={char.id} id={char.id} updateCurrentCharId={updateCurrentCharId} name={char.name} thumbnail={char.thumbnail} />)
     return (
@@ -89,6 +94,26 @@ const List = ({ charsListInfo, updateCurrentCharId }) => {
             {list}
         </ul>
     )
+}
+
+List.propTypes = {
+    charsListInfo: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number,
+        name: PropTypes.string,
+        description: PropTypes.string,
+        thumbnail: PropTypes.string,
+        homepage: PropTypes.string,
+        wiki: PropTypes.string,
+        comics: PropTypes.arrayOf(PropTypes.shape({
+            available: PropTypes.number,
+            collectionURI: PropTypes.string,
+            items: PropTypes.shape({
+                resourceURI: PropTypes.string,
+                name: PropTypes.string,
+            })
+        }))
+    })),
+    updateCurrentCharId: PropTypes.func,
 }
 
 export default CharList;
