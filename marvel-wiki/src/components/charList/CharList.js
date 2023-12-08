@@ -29,7 +29,6 @@ class CharList extends Component {
     marvelService = new MarvelService();
 
     onCharsListLoaded = (charsListInfo) => {
-        console.log(charsListInfo)
         this.setState((prevState) => {
             const newCharListState = [...prevState.charsListInfo, ...charsListInfo];
             if(charsListInfo.length < charsOnPage){
