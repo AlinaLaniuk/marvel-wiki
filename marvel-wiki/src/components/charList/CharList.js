@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import CharCard from '../charCard/CharCard';
@@ -8,112 +8,104 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 
 import './charList.scss';
 
+const marvelService = new MarvelService();
+
 const charsOnPage = 9;
 
 const startOffset = 1550;
 
-class CharList extends Component {
-    constructor(props) {
-        super(props);
-        this.updateCurrentCharId = props.updateCurrentCharId;
-    }
+function CharList({ updateCurrentCharId }) {
+    const [charsListInfo, setCharsListInfo] = useState([]);
+    const [loading, setLoadingMode] = useState(true);
+    const [error, setErrorMode] = useState(false);
+    const [newItemLoading, setNewItemLoading] = useState(false);
+    const [offset, setOffset] = useState(startOffset);
+    const [noMoreChars, setNoMoreCharsMode] = useState(false);
 
-    state = {
-        charsListInfo: [],
-        loading: true,
-        error: false,
-        newItemLoading: false,
-        offset: startOffset,
-        noMoreChars: false
-    }
+    useEffect(onRequest, []);
 
-    marvelService = new MarvelService();
-
-    onCharsListLoaded = (charsListInfo) => {
-        this.setState((prevState) => {
+    const onCharsListLoaded = (charsListInfo) => {
+        setCharsListInfo((prevState) => {
             const newCharListState = [...prevState.charsListInfo, ...charsListInfo];
             if (charsListInfo.length < charsOnPage) {
-                return { charsListInfo: newCharListState, loading: false, newItemLoading: false, noMoreChars: true }
+                setLoadingMode(false);
+                setNewItemLoading(false);
+                setNoMoreCharsMode(true);
+                return newCharListState;
             }
-            return { charsListInfo: newCharListState, loading: false, newItemLoading: false }
+            setLoadingMode(false);
+            setNewItemLoading(false);
+            return newCharListState;
         });
+    };
+
+    const onError = () => {
+        setLoadingMode(false);
+        setErrorMode(true);
+    };
+
+    const onCharListLoading = () => {
+        setNewItemLoading(true);
     }
 
-    onError = () => {
-        this.setState({ loading: false, error: true });
-    }
-
-    componentDidMount() {
-        this.onRequest();
-    }
-
-    onCharListLoading = () => {
-        this.setState({ newItemLoading: true });
-    }
-
-    onRequest = () => {
-        this.onCharListLoading();
-        this.marvelService.getAllCharacters(this.state.offset)
-            .then(this.onCharsListLoaded)
-            .catch(this.onError);
+    const onRequest = () => {
+        onCharListLoading();
+        marvelService.getAllCharacters(offset)
+            .then(onCharsListLoaded)
+            .catch(onError);
+        setOffset((currentOffset) => currentOffset + charsOnPage);
         this.setState(({ offset }) => ({ offset: offset + charsOnPage }));
     }
 
-    render() {
-        const { charsListInfo, loading, error, newItemLoading, noMoreChars } = this.state;
-        const spinner = loading ? <Spinner /> : null;
-        const errorMessage = error ? <ErrorMessage /> : null;
-        const content = !loading ? <List updateCurrentCharId={this.updateCurrentCharId} charsListInfo={charsListInfo} /> : null;
-        const buttonStyle = noMoreChars ? { display: 'none' } : null;
-        return (
-            <div className="char__list">
-                {spinner}
-                {content}
-                {errorMessage}
-                <button
-                    onClick={this.onRequest}
-                    className="button button__main button__long"
-                    disabled={newItemLoading}
-                    style={buttonStyle}
-                >
-                    <div className="inner">load more</div>
-                </button>
-            </div>
-        )
-    }
+    const spinner = loading ? <Spinner /> : null;
+    const errorMessage = error ? <ErrorMessage /> : null;
+    const content = !loading ? <List updateCurrentCharId={updateCurrentCharId} charsListInfo={charsListInfo} /> : null;
+    const buttonStyle = noMoreChars ? { display: 'none' } : null;
+    return (
+        <div className="char__list">
+            {spinner}
+            {content}
+            {errorMessage}
+            <button
+                onClick={onRequest}
+                className="button button__main button__long"
+                disabled={newItemLoading}
+                style={buttonStyle}
+            >
+                <div className="inner">load more</div>
+            </button>
+        </div>
+    )
 }
 
 CharList.propTypes = {
     updateCurrentCharId: PropTypes.func,
 }
 
-class List extends Component {
-    cardsRefs = [];
+function List({charsListInfo, updateCurrentCharId}) {
+    const cardsRefs = [];
 
-    addRefToElem = (elem) => {
-        this.cardsRefs.push(elem);
+    const addRefToElem = (elem) => {
+        cardsRefs.push(elem);
     }
 
-    onClickCard = (id) => {
-        this.props.updateCurrentCharId(id);
+    const onClickCard = (id) => {
+        updateCurrentCharId(id);
 
-        this.cardsRefs.forEach((elem) => {
+        cardsRefs.forEach((elem) => {
             elem.classList.remove('char__item_selected');
             if (Number(elem.dataset.id) === id) {
                 elem.classList.add('char__item_selected');
             }
         });
+    }
 
-    }
-    render() {
-        const { charsListInfo, updateCurrentCharId } = this.props;
-        const list = charsListInfo.map((char) => <CharCard onClickCard={this.onClickCard} addRefToElem={this.addRefToElem} key={char.id} id={char.id} name={char.name} thumbnail={char.thumbnail} />)
-        return (
-            <ul className="char__grid">
-                {list}
-            </ul>
-        )
-    }
+    const list = charsListInfo.map((char) => <CharCard onClickCard={onClickCard} addRefToElem={addRefToElem} key={char.id} id={char.id} name={char.name} thumbnail={char.thumbnail} />)
+    return (
+        <ul className="char__grid">
+            {list}
+        </ul>
+    )
 }
 
 List.propTypes = {
