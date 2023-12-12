@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import MarvelService from '../../services/MarvelService';
@@ -8,73 +8,67 @@ import Image from '../image/Image';
 import './randomChar.scss';
 import mjolnir from '../../resources/img/mjolnir.png';
 
+const marvelService = new MarvelService();
 const noDescriptionText = 'Sorry, here is no description.'
 
-class RandomChar extends Component {
-    state = {
-        char: {},
-        loading: true,
-        error: false,
-    }
+function RandomChar() {
+    const [char, setChar] = useState({});
+    const [loading, setLoadingMode] = useState(true);
+    const [error, setErrorMode] = useState(false);
 
-    marvelService = new MarvelService();
-
-    componentDidMount(){
-        this.updateChar();
-    }
-
-    onError = () => {
-        this.setState({ loading: false, error: true });
-    }
-
-    onCharLoaded = (char) => {
-        this.setState((prevState) => { return { ...prevState, char, loading: false } })
-    }
-
-    onCharLoading = () => {
-        this.setState({loading: true});
-        this.updateChar();
-    }
-
-    updateChar = () => {
+    const updateChar = () => {
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-        this.marvelService.getCharacter(id)
-            .then(this.onCharLoaded)
-            .catch(this.onError)
+        marvelService.getCharacter(id)
+            .then(onCharLoaded)
+            .catch(onError)
     }
 
-    render() {
-        const { char, loading, error } = this.state;
-        const errorMessage = error ? <ErrorMessage/> : null;
-        const spinner = loading ? <Spinner />  : null;
-        const content = !(loading || error) ? <View char={char}/> : null;
+    useEffect(updateChar, []);
 
-        return (
-            <div className="randomchar">
-                {errorMessage}
-                {spinner}
-                {content}
-                <div className="randomchar__static">
-                    <p className="randomchar__title">
-                        Random character for today!<br />
-                        Do you want to get to know him better?
-                    </p>
-                    <p className="randomchar__title">
-                        Or choose another one
-                    </p>
-                    <button onClick={this.onCharLoading} className="button button__main">
-                        <div className="inner">try it</div>
-                    </button>
-                    <img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
-                </div>
+    const onError = () => {
+        setLoadingMode(false);
+        setErrorMode(true);
+    }
+
+    const onCharLoaded = (char) => {
+        setChar(char);
+        setLoadingMode(false);
+    }
+
+    const onCharLoading = () => {
+        setLoadingMode(true)
+        updateChar();
+    }
+
+    const errorMessage = error ? <ErrorMessage /> : null;
+    const spinner = loading ? <Spinner /> : null;
+    const content = !(loading || error) ? <View char={char} /> : null;
+
+    return (
+        <div className="randomchar">
+            {errorMessage}
+            {spinner}
+            {content}
+            <div className="randomchar__static">
+                <p className="randomchar__title">
+                    Random character for today!<br />
+                    Do you want to get to know him better?
+                </p>
+                <p className="randomchar__title">
+                    Or choose another one
+                </p>
+                <button onClick={onCharLoading} className="button button__main">
+                    <div className="inner">try it</div>
+                </button>
+                <img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
             </div>
-        )
-    }
+        </div>
+    )
 }
 
 const View = ({ char }) => {
     const { name, description, thumbnail, homepage, wiki } = char;
-    const isImageNotFoundStyle = {objectFit: 'contain'};
+    const isImageNotFoundStyle = { objectFit: 'contain' };
     return (
         <div className="randomchar__block">
             <Image src={thumbnail} alt={name} style={isImageNotFoundStyle} className='randomchar__img' />
@@ -98,10 +92,10 @@ const View = ({ char }) => {
 
 View.propTypes = {
     char: PropTypes.shape({
-        name: PropTypes.string, 
-        description: PropTypes.string, 
-        thumbnail: PropTypes.string, 
-        homepage: PropTypes.string, 
+        name: PropTypes.string,
+        description: PropTypes.string,
+        thumbnail: PropTypes.string,
+        homepage: PropTypes.string,
         wiki: PropTypes.string,
     })
 }
