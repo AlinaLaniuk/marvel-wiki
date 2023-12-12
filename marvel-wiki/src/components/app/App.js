@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useEffect, useState } from "react";
 
 import AppHeader from "../appHeader/AppHeader";
 import RandomChar from "../randomChar/RandomChar";
@@ -8,37 +8,33 @@ import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
 import decoration from '../../resources/img/vision.png';
 
-class App extends Component {
-    state = {
-        currentCharId: null,
+function App() {
+    const [charId, setCharId] = useState(null);
+
+    const updateCurrentCharId = (newId) => {
+        setCharId(newId);
     }
 
-    updateCurrentCharId = (newId) => {
-        this.setState({ currentCharId: newId });
-    }
-
-    render() {
-        const { currentCharId } = this.state;
-        return (
-            <div className="app">
-                <AppHeader />
-                <main>
+    return (
+        <div className="app">
+            <AppHeader />
+            <main>
+                <ErrorBoundary>
+                    <RandomChar />
+                </ErrorBoundary>
+                <div className="char__content">
                     <ErrorBoundary>
-                        <RandomChar />
+                        <CharList updateCurrentCharId={updateCurrentCharId} />
                     </ErrorBoundary>
-                    <div className="char__content">
-                        <ErrorBoundary>
-                            <CharList updateCurrentCharId={this.updateCurrentCharId} />
-                        </ErrorBoundary>
-                        <ErrorBoundary>
-                            <CharInfo currentCharId={currentCharId} />
-                        </ErrorBoundary>
-                    </div>
-                    <img className="bg-decoration" src={decoration} alt="vision" />
-                </main>
-            </div>
-        )
-    }
+                    <ErrorBoundary>
+                        <CharInfo currentCharId={charId} />
+                    </ErrorBoundary>
+                </div>
+                <img className="bg-decoration" src={decoration} alt="vision" />
+            </main>
+        </div>
+    )
+
 }
 
 export default App;
